@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstonishMe - Daily Workout Generator & Interval Timer</title>
-    <meta name="description" content="Generate daily strength and conditioning workouts and train with a custom HIIT/Interval timer.">
+    <title>AstonishMe - Daily Workout Generator</title>
+    <meta name="description" content="Generate daily strength and conditioning workouts and train with a stopwatch and countdown timer.">
 
-    <!-- Google AdSense Code (Replace ca-pub-XXXXXXXXXXXXXXXX with your publisher ID once approved) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
-
-    <!-- Tailwind CSS for sleek modern styling matching Material 3 Dark theme -->
+    <!-- Tailwind CSS matching Material 3 Dark theme -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,6 +15,7 @@
                     colors: {
                         brandDark: '#121212',
                         brandCard: '#1E1E1E',
+                        brandSurfaceVariant: '#252528',
                         brandPrimary: '#BB86FC',
                         brandSecondary: '#03DAC6',
                     }
@@ -30,7 +28,6 @@
 
     <!-- Top Banner Ad Placeholder -->
     <div class="w-full max-w-2xl my-2 p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-center text-xs text-neutral-500">
-        <!-- AdSense Slot (Top Banner) -->
         <span>Advertisement</span>
         <div id="ad-top-slot" class="min-h-[60px] flex items-center justify-center">
             <!-- Ad unit code will go here -->
@@ -54,8 +51,8 @@
             </div>
 
             <!-- Placeholder (Before generating) -->
-            <div id="workout-placeholder" class="bg-neutral-900/60 rounded-xl p-8 border border-neutral-800 text-center">
-                <p class="text-gray-500 font-semibold text-sm">Your workout will appear here</p>
+            <div id="workout-placeholder" class="bg-neutral-900/60 rounded-xl p-10 border border-neutral-800 text-center">
+                <p class="text-gray-500 font-bold text-base">Your workout will appear here</p>
             </div>
 
             <!-- Workout Results Card -->
@@ -67,21 +64,21 @@
 
                 <!-- Warm Up -->
                 <div>
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">Warm Up</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-teal-400 mb-1">Warm-Up</h3>
                     <p id="workout-warmup" class="text-gray-300 text-sm leading-relaxed"></p>
                 </div>
 
                 <!-- Strength Block -->
                 <div class="space-y-3">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-purple-300">Part A: Strength Block</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-teal-400">Part A: Strength Block</h3>
                     <div id="strength-exercises" class="space-y-2"></div>
                 </div>
 
                 <!-- Conditioning Block -->
                 <div class="space-y-3">
-                    <div class="flex justify-between items-baseline">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-teal-300">Part B: Conditioning Block</h3>
-                        <span id="conditioning-format" class="text-xs text-yellow-400 font-medium"></span>
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-teal-400">Part B: Conditioning Block</h3>
+                        <p id="conditioning-format" class="text-xs text-yellow-400 font-semibold mt-0.5"></p>
                     </div>
                     <div id="conditioning-exercises" class="space-y-2"></div>
                 </div>
@@ -89,38 +86,51 @@
         </section>
 
         <!-- Divider -->
-        <hr class="border-neutral-800 my-2" />
+        <hr class="border-neutral-800" />
 
-        <!-- ================= INTERVAL TIMER (BELOW WORKOUT) ================= -->
-        <section id="section-timer" class="space-y-4">
-            <!-- Timer Display -->
-            <div class="bg-neutral-900 rounded-2xl p-5 text-center border border-neutral-700">
-                <span id="timer-phase" class="text-xs uppercase font-bold tracking-widest text-teal-400">READY</span>
-                <div id="timer-display" class="text-6xl font-black font-mono my-1 text-white">00:00</div>
-                <div id="timer-round" class="text-xs text-gray-400">Round 0 of 0</div>
+        <!-- ================= TIMER SECTION (STOPWATCH / COUNTDOWN) ================= -->
+        <section id="section-timer" class="bg-brandSurfaceVariant rounded-xl p-5 border border-neutral-700 space-y-4">
+            <!-- Mode Tabs (Stopwatch vs Countdown) -->
+            <div class="flex border-b border-neutral-700">
+                <button id="tab-stopwatch" onclick="setTimerMode('stopwatch')" class="flex-1 pb-2.5 text-center font-bold text-sm text-brandPrimary border-b-2 border-brandPrimary transition">
+                    Stopwatch
+                </button>
+                <button id="tab-countdown" onclick="setTimerMode('countdown')" class="flex-1 pb-2.5 text-center font-bold text-sm text-gray-400 hover:text-gray-200 transition">
+                    Countdown
+                </button>
             </div>
 
-            <!-- Timer Controls -->
-            <div class="grid grid-cols-3 gap-3 text-xs">
-                <div>
-                    <label class="block text-gray-400 mb-1 text-center font-medium">Work (sec)</label>
-                    <input id="input-work" type="number" value="20" min="5" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-2 text-center text-white text-sm font-semibold">
+            <!-- Time Display / Input Area -->
+            <div class="min-h-[90px] flex items-center justify-center">
+                <!-- Running / Stopwatch Display (MM:SS) -->
+                <div id="timer-display-box" class="text-5xl md:text-6xl font-black font-mono tracking-tight text-white">
+                    00:00
                 </div>
-                <div>
-                    <label class="block text-gray-400 mb-1 text-center font-medium">Rest (sec)</label>
-                    <input id="input-rest" type="number" value="10" min="0" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-2 text-center text-white text-sm font-semibold">
-                </div>
-                <div>
-                    <label class="block text-gray-400 mb-1 text-center font-medium">Rounds</label>
-                    <input id="input-rounds" type="number" value="8" min="1" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-2 text-center text-white text-sm font-semibold">
+
+                <!-- Countdown Input Form (Visible only when in Countdown mode and NOT running) -->
+                <div id="countdown-input-box" class="hidden flex items-center justify-center gap-2">
+                    <div class="flex flex-col items-center">
+                        <label class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">Min</label>
+                        <input id="input-minutes" type="number" min="0" max="999" value="1" oninput="updateCountdownFromInputs()"
+                            class="w-20 bg-neutral-900 border border-neutral-600 rounded-lg p-2.5 text-center text-white font-mono text-xl font-bold focus:outline-none focus:border-brandPrimary">
+                    </div>
+                    <span class="text-3xl font-bold text-gray-300 mt-4">:</span>
+                    <div class="flex flex-col items-center">
+                        <label class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">Sec</label>
+                        <input id="input-seconds" type="number" min="0" max="59" value="00" oninput="updateCountdownFromInputs()"
+                            class="w-20 bg-neutral-900 border border-neutral-600 rounded-lg p-2.5 text-center text-white font-mono text-xl font-bold focus:outline-none focus:border-brandPrimary">
+                    </div>
                 </div>
             </div>
 
-            <div class="flex gap-3">
-                <button id="btn-timer-start" onclick="toggleTimer()" class="flex-1 py-3 bg-brandSecondary hover:bg-teal-300 text-black font-bold rounded-xl transition">
+            <!-- Control Buttons -->
+            <div class="flex gap-4">
+                <button id="btn-toggle" onclick="toggleTimer()" 
+                    class="flex-1 py-3 px-4 bg-brandPrimary hover:bg-purple-400 text-black font-bold rounded-xl transition shadow-md">
                     Start
                 </button>
-                <button onclick="resetTimer()" class="py-3 px-6 bg-neutral-800 hover:bg-neutral-700 text-gray-200 font-bold rounded-xl transition">
+                <button onclick="resetTimer()" 
+                    class="flex-1 py-3 px-4 bg-brandSecondary hover:bg-teal-300 text-black font-bold rounded-xl transition shadow-md">
                     Reset
                 </button>
             </div>
@@ -129,7 +139,6 @@
 
     <!-- Bottom Banner Ad Placeholder -->
     <div class="w-full max-w-2xl my-4 p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-center text-xs text-neutral-500">
-        <!-- AdSense Slot (Bottom Banner) -->
         <span>Advertisement</span>
         <div id="ad-bottom-slot" class="min-h-[60px] flex items-center justify-center">
             <!-- Ad unit code will go here -->
@@ -143,7 +152,7 @@
 
     <!-- Application Script -->
     <script>
-        // Exercise data mirroring Android app's list
+        // Exercise lists matching Android app
         const strengthList = [
             "Back Squat", "Deadlift", "Bench Press", "Barbell Row", "Clean and Jerk", 
             "Romanian Deadlift", "Overhead Squat", "Snatch", "Overhead Press", "Power Clean", 
@@ -152,20 +161,40 @@
         ];
 
         const conditioningList = [
-            "Run 400m", "500m Row", "Burpees", "Push Ups", "Pull Ups", "Plank Hold", 
-            "Dumbbell Thrusters", "Dumbbell Lunges", "Kettlebell Swings", "Dips", 
-            "Russian Twists", "Hanging Leg Raises", "Assault Bike Cals", "Jump Squats", 
-            "Box Jumps", "Sit Ups", "Med Ball Slams", "Toes to Bar"
+            { name: "Run", scheme: "400m Run (High Intensity)" },
+            { name: "Rower", scheme: "500m Row (High Intensity)" },
+            { name: "Burpees", scheme: "15 Reps" },
+            { name: "Push Ups", scheme: "15-20 Reps" },
+            { name: "Pull Ups", scheme: "8-12 Reps" },
+            { name: "Plank", scheme: "Hold for 45-60 seconds" },
+            { name: "Dumbbell Thrusters", scheme: "15 Reps" },
+            { name: "Dumbbell Lunges", scheme: "20 Alt. Reps" },
+            { name: "Kettlebell Swing", scheme: "20 Reps" },
+            { name: "Dips", scheme: "15-20 Reps" },
+            { name: "Russian Twist", scheme: "20 Reps" },
+            { name: "Hanging Leg Raise", scheme: "12-15 Reps" },
+            { name: "Assault Bike", scheme: "Calorie sprint" },
+            { name: "Jump Squats", scheme: "20-25 Reps" },
+            { name: "Seated Box Jump", scheme: "8 high jumps" },
+            { name: "Sit Up", scheme: "20-25 Reps" },
+            { name: "Med Ball Slams", scheme: "15 slam reps" },
+            { name: "Toes to Bar", scheme: "8-12 Reps" }
         ];
 
         const conditioningFormats = [
-            "AMRAP in 12 Minutes (As Many Rounds As Possible)",
-            "3 Rounds For Time",
-            "EMOM for 10 Minutes (Every Minute on the Minute)",
-            "Tabata Circuit (20s On / 10s Off)"
+            "AMRAP 15 Minutes (As Many Rounds As Possible)",
+            "4 Rounds for Time (Complete as fast as possible with good form)",
+            "EMOM 12 Minutes (Every Minute on the Minute - perform exercise 1 on min 1, exercise 2 on min 2, etc.)"
         ];
 
-        // --- Workout Generator Logic ---
+        const workoutTitles = [
+            "Power & Grit S&C",
+            "Iron Core & Cardio Burn",
+            "Full-Body Strength & Conditioning",
+            "The Hybrid Athletic Session",
+            "Peak Performance Protocol"
+        ];
+
         function shuffle(arr) {
             return [...arr].sort(() => 0.5 - Math.random());
         }
@@ -173,140 +202,165 @@
         function generateWorkout() {
             const shuffledStrength = shuffle(strengthList);
             const shuffledConditioning = shuffle(conditioningList);
-            const selectedFormat = conditioningFormats[Math.floor(Math.random() * conditioningFormats.length)];
+            const format = conditioningFormats[Math.floor(Math.random() * conditioningFormats.length)];
+            const title = workoutTitles[Math.floor(Math.random() * workoutTitles.length)];
 
-            document.getElementById('workout-title').innerText = "Today's Generated Session";
-            document.getElementById('workout-warmup').innerText = "5-10 minutes dynamic stretching, hip mobility drills, 400m easy jog or row, and progressive barbell warm-up sets.";
+            document.getElementById('workout-title').innerText = title;
+            document.getElementById('workout-warmup').innerText = "5-10 Minutes of dynamic stretching: Arm circles, leg swings, bodyweight squats, and jumping jacks.";
 
             // Part A
             const s1 = shuffledStrength[0];
             const s2 = shuffledStrength[1];
-            const strengthContainer = document.getElementById('strength-exercises');
-            strengthContainer.innerHTML = `
+            const s1Scheme = ["Deadlift", "Clean and Jerk", "Snatch"].includes(s1) ? "3 sets x 5 reps (Heavy)" : "4 sets x 8 reps (Moderate-Heavy)";
+            const s2Scheme = ["Deadlift", "Clean and Jerk", "Snatch"].includes(s2) ? "3 sets x 5 reps (Heavy)" : "4 sets x 8-10 reps (Moderate-Heavy)";
+
+            document.getElementById('strength-exercises').innerHTML = `
                 <div class="bg-neutral-800 p-3 rounded-lg border border-neutral-700 flex justify-between items-center">
                     <span class="font-bold text-white text-sm">${s1}</span>
-                    <span class="text-xs bg-purple-900/60 text-purple-200 px-2 py-1 rounded font-medium">4 sets x 6-8 reps</span>
+                    <span class="text-xs bg-purple-900/60 text-purple-200 px-2 py-1 rounded font-bold">${s1Scheme}</span>
                 </div>
                 <div class="bg-neutral-800 p-3 rounded-lg border border-neutral-700 flex justify-between items-center">
                     <span class="font-bold text-white text-sm">${s2}</span>
-                    <span class="text-xs bg-purple-900/60 text-purple-200 px-2 py-1 rounded font-medium">3 sets x 8-10 reps</span>
+                    <span class="text-xs bg-purple-900/60 text-purple-200 px-2 py-1 rounded font-bold">${s2Scheme}</span>
                 </div>
             `;
 
             // Part B
-            document.getElementById('conditioning-format').innerText = selectedFormat;
-            const condContainer = document.getElementById('conditioning-exercises');
+            document.getElementById('conditioning-format').innerText = format;
             const cExercises = shuffledConditioning.slice(0, 3);
-            condContainer.innerHTML = cExercises.map((ex, idx) => `
+            document.getElementById('conditioning-exercises').innerHTML = cExercises.map(ex => `
                 <div class="bg-neutral-800 p-3 rounded-lg border border-neutral-700 flex justify-between items-center">
-                    <span class="text-white font-medium text-sm">${idx + 1}. ${ex}</span>
-                    <span class="text-xs bg-teal-900/60 text-teal-300 px-2 py-1 rounded font-medium">High Intensity</span>
+                    <span class="text-white font-bold text-sm">${ex.name}</span>
+                    <span class="text-xs bg-teal-900/60 text-teal-300 px-2 py-1 rounded font-bold">${ex.scheme}</span>
                 </div>
             `).join('');
 
-            // Hide placeholder and reveal workout card
             document.getElementById('workout-placeholder').classList.add('hidden');
             document.getElementById('workout-card').classList.remove('hidden');
             document.getElementById('btn-generate').innerHTML = `<span>🔄</span> <span>Regenerate S&C Workout</span>`;
         }
 
-        // --- Interval Timer with Audio Beeps ---
-        let timerInterval = null;
+        // ================= STOPWATCH / COUNTDOWN TIMER LOGIC =================
+        let isStopwatchMode = true;
         let isRunning = false;
-        let currentPhase = 'WORK'; // 'WORK' or 'REST'
-        let currentRound = 1;
-        let timeLeft = 0;
-        let wakeLock = null;
+        let elapsedMs = 0;
+        let countdownRemainingMs = 60000; // 1 min default
+        let timerInterval = null;
+        let lastTime = 0;
 
-        // Web Audio Synthesizer (No external audio file needed)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playBeep(freq = 600, duration = 0.15) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.frequency.value = freq;
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-            osc.stop(audioCtx.currentTime + duration);
+        function formatTime(ms) {
+            const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+            const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${seconds}`;
         }
 
-        async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
-            } catch (err) {}
+        function updateCountdownFromInputs() {
+            const min = parseInt(document.getElementById('input-minutes').value) || 0;
+            const sec = parseInt(document.getElementById('input-seconds').value) || 0;
+            countdownRemainingMs = (min * 60 + sec) * 1000;
         }
 
-        function updateDisplay() {
-            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-            const s = (timeLeft % 60).toString().padStart(2, '0');
-            document.getElementById('timer-display').innerText = `${m}:${s}`;
+        function setTimerMode(mode) {
+            pauseTimer();
+            isStopwatchMode = (mode === 'stopwatch');
+
+            const tabStopwatch = document.getElementById('tab-stopwatch');
+            const tabCountdown = document.getElementById('tab-countdown');
+
+            if (isStopwatchMode) {
+                tabStopwatch.className = "flex-1 pb-2.5 text-center font-bold text-sm text-brandPrimary border-b-2 border-brandPrimary transition";
+                tabCountdown.className = "flex-1 pb-2.5 text-center font-bold text-sm text-gray-400 hover:text-gray-200 transition";
+            } else {
+                tabCountdown.className = "flex-1 pb-2.5 text-center font-bold text-sm text-brandPrimary border-b-2 border-brandPrimary transition";
+                tabStopwatch.className = "flex-1 pb-2.5 text-center font-bold text-sm text-gray-400 hover:text-gray-200 transition";
+                updateCountdownFromInputs();
+            }
+
+            renderTimerUI();
+        }
+
+        function renderTimerUI() {
+            const displayBox = document.getElementById('timer-display-box');
+            const inputBox = document.getElementById('countdown-input-box');
+            const btnToggle = document.getElementById('btn-toggle');
+
+            if (!isStopwatchMode && !isRunning) {
+                // Show inputs when idle in countdown mode
+                displayBox.classList.add('hidden');
+                inputBox.classList.remove('hidden');
+            } else {
+                inputBox.classList.add('hidden');
+                displayBox.classList.remove('hidden');
+                const timeMs = isStopwatchMode ? elapsedMs : countdownRemainingMs;
+                displayBox.innerText = formatTime(timeMs);
+            }
+
+            // Button styling
+            if (isRunning) {
+                btnToggle.innerText = "Stop";
+                btnToggle.className = "flex-1 py-3 px-4 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition shadow-md";
+            } else {
+                btnToggle.innerText = "Start";
+                btnToggle.className = "flex-1 py-3 px-4 bg-brandPrimary hover:bg-purple-400 text-black font-bold rounded-xl transition shadow-md";
+            }
         }
 
         function toggleTimer() {
             if (isRunning) {
-                clearInterval(timerInterval);
-                isRunning = false;
-                document.getElementById('btn-timer-start').innerText = "Resume";
+                pauseTimer();
             } else {
-                requestWakeLock();
-                if (timeLeft <= 0) {
-                    currentRound = 1;
-                    currentPhase = 'WORK';
-                    timeLeft = parseInt(document.getElementById('input-work').value) || 20;
-                }
-                isRunning = true;
-                document.getElementById('btn-timer-start').innerText = "Pause";
-                runTimerTick();
+                startTimer();
             }
         }
 
-        function runTimerTick() {
+        function startTimer() {
+            if (!isStopwatchMode && countdownRemainingMs <= 0) {
+                updateCountdownFromInputs();
+            }
+            isRunning = true;
+            lastTime = Date.now();
+
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                const totalRounds = parseInt(document.getElementById('input-rounds').value) || 8;
-                document.getElementById('timer-round').innerText = `Round ${currentRound} of ${totalRounds}`;
-                document.getElementById('timer-phase').innerText = currentPhase;
-                document.getElementById('timer-phase').className = currentPhase === 'WORK' 
-                    ? "text-xs uppercase font-bold tracking-widest text-teal-400" 
-                    : "text-xs uppercase font-bold tracking-widest text-yellow-400";
+                const now = Date.now();
+                const diff = now - lastTime;
+                lastTime = now;
 
-                updateDisplay();
-
-                if (timeLeft <= 3 && timeLeft > 0) playBeep(440, 0.1); // Countdown beep
-                if (timeLeft === 0) {
-                    playBeep(880, 0.35); // Phase shift beep
-                    if (currentPhase === 'WORK') {
-                        currentPhase = 'REST';
-                        timeLeft = parseInt(document.getElementById('input-rest').value) || 10;
-                    } else {
-                        currentRound++;
-                        if (currentRound > totalRounds) {
-                            resetTimer();
-                            document.getElementById('timer-phase').innerText = "FINISHED!";
-                            return;
-                        }
-                        currentPhase = 'WORK';
-                        timeLeft = parseInt(document.getElementById('input-work').value) || 20;
-                    }
+                if (isStopwatchMode) {
+                    elapsedMs += diff;
                 } else {
-                    timeLeft--;
+                    if (countdownRemainingMs > diff) {
+                        countdownRemainingMs -= diff;
+                    } else {
+                        countdownRemainingMs = 0;
+                        pauseTimer();
+                    }
                 }
-            }, 1000);
+                renderTimerUI();
+            }, 100);
+
+            renderTimerUI();
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            renderTimerUI();
         }
 
         function resetTimer() {
-            clearInterval(timerInterval);
-            isRunning = false;
-            timeLeft = 0;
-            currentRound = 1;
-            document.getElementById('btn-timer-start').innerText = "Start";
-            document.getElementById('timer-display').innerText = "00:00";
-            document.getElementById('timer-phase').innerText = "READY";
-            document.getElementById('timer-round').innerText = "Round 0 of 0";
-            if (wakeLock) { wakeLock.release(); wakeLock = null; }
+            pauseTimer();
+            if (isStopwatchMode) {
+                elapsedMs = 0;
+            } else {
+                updateCountdownFromInputs();
+            }
+            renderTimerUI();
         }
+
+        // Initialize display
+        renderTimerUI();
     </script>
 </body>
 </html>
