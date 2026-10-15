@@ -155,6 +155,33 @@
             color: #0c4a6e;
         }
 
+        /* Show Email Button Styling */
+        .show-email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 9px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+        }
+
+        .show-email-btn:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .show-email-btn:active {
+            transform: scale(0.98);
+        }
+
         footer {
             margin-top: 60px;
             text-align: center;
@@ -274,15 +301,31 @@
         <p>
             If you have any questions or feedback regarding this Privacy Policy or your privacy while using the AstonishMe Web App, please reach out to:
         </p>
-        <p style="margin-top: 8px; font-weight: bold; font-size: 1.1rem;">
-            Email: <a href="mailto:ast0nishm0m40l@gmail.com">ast0nishm0m40l@gmail.com</a>
-        </p>
+        <div id="email-area">
+            <button type="button" class="show-email-btn" onclick="revealEmail()">
+                Show Email Address
+            </button>
+        </div>
     </div>
 
     <footer>
         <p>&copy; 2026 AstonishMe. All rights reserved.</p>
     </footer>
 </div>
+
+<script>
+    function revealEmail() {
+        const user = "ast0nishm0m40l";
+        const domain = "gmail.com";
+        const email = user + "@" + domain;
+        const container = document.getElementById("email-area");
+        container.innerHTML = `
+            <p style="margin-top: 12px; font-weight: bold; font-size: 1.1rem;">
+                Email: <a href="mailto:${email}">${email}</a>
+            </p>
+        `;
+    }
+</script>
 
 </body>
 </html>
