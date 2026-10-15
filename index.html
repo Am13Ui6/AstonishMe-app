@@ -59,8 +59,7 @@
 
             <!-- Workout Results Card -->
             <div id="workout-card" class="hidden bg-neutral-900/90 rounded-xl p-5 border border-neutral-700 space-y-5">
-                <div class="border-b border-neutral-700 pb-3 flex justify-between items-center">
-                    <h2 id="workout-title" class="text-xl font-bold text-brandSecondary">Workout</h2>
+                <div class="border-b border-neutral-700 pb-3 flex justify-end items-center">
                     <span class="text-xs bg-purple-900/60 text-purple-200 px-2.5 py-1 rounded-full font-medium">Daily Routine</span>
                 </div>
 
@@ -189,14 +188,6 @@
             "EMOM 12 Minutes (Every Minute on the Minute - perform exercise 1 on min 1, exercise 2 on min 2, etc.)"
         ];
 
-        const workoutTitles = [
-            "Power & Grit S&C",
-            "Iron Core & Cardio Burn",
-            "Full-Body Strength & Conditioning",
-            "The Hybrid Athletic Session",
-            "Peak Performance Protocol"
-        ];
-
         function shuffle(arr) {
             return [...arr].sort(() => 0.5 - Math.random());
         }
@@ -205,9 +196,7 @@
             const shuffledStrength = shuffle(strengthList);
             const shuffledConditioning = shuffle(conditioningList);
             const format = conditioningFormats[Math.floor(Math.random() * conditioningFormats.length)];
-            const title = workoutTitles[Math.floor(Math.random() * workoutTitles.length)];
 
-            document.getElementById('workout-title').innerText = title;
             document.getElementById('workout-warmup').innerText = "5-10 Minutes of dynamic stretching: Arm circles, leg swings, bodyweight squats, and jumping jacks.";
 
             // Part A
